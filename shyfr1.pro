@@ -19,7 +19,7 @@ SOURCES += \
         controler.cpp \
         crypter.cpp \
         main.cpp \
-        shiftcrypter.cpp
+        vizhenercrypter.cpp
 
 RESOURCES += qml.qrc
 
@@ -37,7 +37,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     controler.h \
     crypter.h \
-    shiftcrypter.h
+    vizhenercrypter.h
 
 DISTFILES += \
     wordsEN.txt \

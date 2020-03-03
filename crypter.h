@@ -1,28 +1,29 @@
 #ifndef CRYPTER_H
 #define CRYPTER_H
-#include <QString>
-#include <QList>
-#include <QMap>
+#include "QtConcurrent/QtConcurrent"
+#include <cmath>
 
 class Crypter
 {
 public:
     Crypter();
-    virtual ~Crypter();
-    virtual const QString encrypt(QString data,const QString language, const int key)=0;
-    virtual const QString decrypt(QString data,const QString language,const int key)=0;
-    virtual const QString encryptFromBites(QByteArray data, const QString language, const int key)=0;
-    virtual const QByteArray decryptFromBites(QString data, const QString language, const int key)=0;
-    virtual const QMap<QString,QString> getLanguages()=0;
-    virtual int decryptWithoutKey(QString data,const QString language)=0;
-protected:
-    virtual void encryptHelper(QList<QString>::iterator begin,QList<QString>::iterator end,const QString language, const int key)=0;
-    virtual void decryptHelper(QList<QString>::iterator begin,QList<QString>::iterator end,const QString language, const int key)=0;
-    virtual int decryptWithoutKeyHelper(const QString data,QSet<QString>& wordList,QString alphabet,QPair<QString::iterator,QString::iterator> firstAndLastLetters, const float neededPercent)=0;
-    virtual QString encryptFromBitesHelper(QByteArray::iterator begin, QByteArray::iterator end, const QString language, const int key)=0;
-    virtual QByteArray decryptFromBitesHelper(QString::iterator begin, QString::iterator end, const QString language, const int key)=0;
-    const int maxThreads = 4;
+    virtual ~Crypter(){}
+    const QString encrypt(QString data,const QString language, QList<double> keys);
+    const QString decrypt(QString data,const QString language, QList<double> keys);
+    const QString encryptFromBites(QByteArray data, const QString language, QList<double> keys);
+    const QByteArray decryptFromBites(QString data, const QString language, QList<double> keys);
+    const QMap<QString,QString> getLanguages();
+    virtual QList<double> decryptWithoutKey(QString data,QString output,const QString language);
+private:
+    void encryptHelper(QList<QString>::iterator begin,QList<QString>::iterator end,const QString language, QList<double> keys);
+    void decryptHelper(QList<QString>::iterator begin,QList<QString>::iterator end,const QString language, QList<double> keys);
+    virtual QList<double> decryptWithoutKeyHelper(const QString data,const QString output,QString alphabet);
+    QString encryptFromBitesHelper(QByteArray::iterator begin, QByteArray::iterator end, const QString language, QList<double> keys);
+    QByteArray decryptFromBitesHelper(QString::iterator begin, QString::iterator end, const QString language, QList<double> keys);
+    QMap<QString,QString> wordLists;
     QMap<QString,QString> languages;
+    const int maxThreads = 4;
+    double keyCalc(const int p,QList<double> keys);
 };
 
-#endif // CRYPTER_H
+#endif //CRYPTER_H
