@@ -13,8 +13,8 @@ class Controler : public QObject
     Q_OBJECT
 public:
     explicit Controler(QObject *parent = nullptr);
-    virtual ~Controler(){ delete crypter; delete vCrypter;}
-    virtual bool validateData(QString data,const QString language);
+    virtual ~Controler(){ delete vCrypter;}
+    virtual bool validateData(QString data,const QString language,const QString key);
     QString outputType;
 signals:
     void signalValidateKeyError(const QString& message);
@@ -26,15 +26,12 @@ signals:
     void signalFileReadFinished(const QString res);
     void signalOutputTypeChanged(const QString newOutput);
 public slots:
-    void slotWork(QString input, const QString action, const QString language, const QString type, QList<QVariant> keys);
     void slotWorkStr(QString input, const QString action, const QString language, const QString type, const QString key);
     void slotWorkWithoutKeyStr(const QString input,const QString output,const QString lang);
-    void slotWorkWithoutKey(const QString input,const QString output,const QString lang);
     void slotReadFile(const QString& fileurl);
     void slotCopy();
     void slotSaveFile(const QString& fileurl);
 private:
-    Crypter * crypter;
     VizhenerCrypter * vCrypter;
     QByteArray bin;
     QByteArray binOutput;

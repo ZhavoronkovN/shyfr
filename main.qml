@@ -73,7 +73,7 @@ Window {
                 right: parent.right
                 top : parent.top
             }
-            height: parent.height/5
+            height: parent.height/4
             Label{
                 id : labelSelectFile
                 anchors{
@@ -139,7 +139,7 @@ Window {
                 right: parent.right
                 top : rectFile.bottom
             }
-            height: 2*parent.height/5
+            height: 2*parent.height/4
             Rectangle{
                 id : rectSettingLanguage
                 anchors{
@@ -226,80 +226,13 @@ Window {
             }
         }
         Rectangle{
-            id: rectType
+            id : rectKey
             anchors{
                 left: parent.left
                 right : parent.right
                 top : rectSettings.bottom
             }
-            height: parent.height/5
-            Label{
-                id : labelType
-                anchors{
-                    left: parent.left
-                    top : parent.top
-                    bottom: parent.bottom
-                }
-                text : "Type : "
-                font.pixelSize: 17
-            }
-            RadioButton{
-                id: radioTypeFirst
-                anchors{
-                    left: labelType.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                text: "First(A,B)"
-                checked: true
-                font.pixelSize: 17
-                onClicked: {
-                    rectKeyFirst.visible=true;
-                    editKeyFirstC.visible=false;
-                    editKeyVizhener.visible=false;
-                }
-            }
-            RadioButton{
-                id: radioTypeSecond
-                anchors{
-                    left: radioTypeFirst.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                text: "Second(A,B,C)"
-                font.pixelSize: 17
-                onClicked: {
-                    rectKeyFirst.visible = true;
-                    editKeyFirstC.visible = true;
-                    editKeyVizhener.visible=false;
-                }
-            }
-            RadioButton{
-                id: radioTypeVizhener
-                anchors{
-                    left: radioTypeSecond.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                text: "Vizhener"
-                font.pixelSize: 17
-                onClicked: {
-                    rectKeyFirst.visible=false;
-                    editKeyVizhener.visible=true;
-                }
-            }
-        }
-        Rectangle{
-            id : rectKey
-            anchors{
-                left: parent.left
-                right : parent.right
-                top : rectType.bottom
-            }
-            height: parent.height/5
+            height: parent.height/4
             Label{
                 id : labelKey
                 anchors{
@@ -310,114 +243,17 @@ Window {
                 text : "Select key : "
                 font.pixelSize: 17
             }
-            Rectangle{
-                id : rectKeyFirst
-                anchors{
-                    left: labelKey.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                Label{
-                    id: labelKeyFirstA
-                    anchors{
-                        left:parent.left
-                        leftMargin: 10
-                        top : parent.top
-                        bottom: parent.bottom
-                    }
-                    text : "A :"
-                    font.pixelSize: 17
-                }
-                TextInput{
-                    id : editKeyFirstA
-                    anchors{
-                        left : labelKeyFirstA.right
-                        leftMargin: 5
-                        top : parent.top
-                        bottom : parent.bottom
-                    }
-                    text : "0,0"
-                    width: 30
-                    font.pixelSize: 17
-                    validator : DoubleValidator
-                    {
-                        bottom: 0
-                    }
-                    enabled: visible
-                }
-                Label{
-                    id: labelKeyFirstB
-                    anchors{
-                        left:editKeyFirstA.right
-                        leftMargin: 10
-                        top : parent.top
-                        bottom: parent.bottom
-                    }
-                    text : "B :"
-                    font.pixelSize: 17
-                }
-                TextInput{
-                    id : editKeyFirstB
-                    anchors{
-                        left : labelKeyFirstB.right
-                        leftMargin: 5
-                        top : parent.top
-                        bottom : parent.bottom
-                    }
-                    text : "0,0"
-                    width: 30
-                    font.pixelSize: 17
-                    validator: DoubleValidator
-                    {
-                        bottom: 0
-                    }
-                    enabled: visible
-                }
-                Label{
-                    id: labelKeyFirstC
-                    anchors{
-                        left: editKeyFirstB.right
-                        leftMargin: 10
-                        top : parent.top
-                        bottom: parent.bottom
-                    }
-                    text : "C :"
-                    font.pixelSize: 17
-                    visible: editKeyFirstC.visible
-                }
-                TextInput{
-                    id : editKeyFirstC
-                    anchors{
-                        left : labelKeyFirstC.right
-                        leftMargin: 5
-                        top : parent.top
-                        bottom : parent.bottom
-                    }
-                    text : "0,0"
-                    width: 30
-                    font.pixelSize: 17
-                    visible: false
-                    validator: DoubleValidator
-                    {
-                        bottom: 0
-                    }
-                    enabled: visible
-                }
-            }
             TextInput{
                 id : editKeyVizhener
                 anchors{
                     left: labelKey.right
                     leftMargin: 10
+                    right: checkDontKnowKey.right
                     top: parent.top
                     bottom: parent.bottom
                 }
                 font.pixelSize: 17
                 validator: RegExpValidator {regExp: radioLanguageEn.checked?/[ abcdefghijklmnopqrstuvwxyz]+/:/[ абвгґдеєжзиіїйклмнопрстуфхцчшщьюя]+/}
-                width: 400
-                visible: false
-                enabled: visible
             }
             CheckBox{
                 id : checkDontKnowKey
@@ -522,19 +358,11 @@ Window {
             var lang = radioLanguageEn.checked?"en":"ukr";
             var action = radioActionDecode.checked?"decode":"encode";
             var type = textInput.readOnly == true?"binary":"normal";
-            if(radioTypeVizhener.checked){
-                if(checkDontKnowKey.checked){
-                    controler.slotWorkWithoutKeyStr(textInput.text,textOutput.text,lang);
-                }
-                else
-                    controler.slotWorkStr(textInput.text,action,lang,type,editKeyVizhener.text);
+            if(checkDontKnowKey.checked){
+                controler.slotWorkWithoutKeyStr(textInput.text,textOutput.text,lang);
             }
-            else{
-                    if(checkDontKnowKey.checked)
-                        controler.slotWorkWithoutKey(textInput.text,textOutput.text,lang);
-                    else
-                        controler.slotWork(textInput.text,action,lang,type,radioTypeSecond.checked?[parseFloat(editKeyFirstA.text),parseFloat(editKeyFirstB.text),parseFloat(editKeyFirstC.text)]:[parseFloat(editKeyFirstA.text),parseFloat(editKeyFirstB.text)]);
-            }
+            else
+                controler.slotWorkStr(textInput.text,action,lang,type,editKeyVizhener.text);
         }
     }
     Button{
@@ -640,11 +468,5 @@ Window {
             }
         }
         onSignalKeyFoundStr: editKeyVizhener.text=key;
-        onSignalKeyFound: {
-            editKeyFirstA.text=keys[0];
-            editKeyFirstB.text=keys[1];
-            if(editKeyFirstC.visible)
-                editKeyFirstC.text=keys[2];
-        }
     }
 }

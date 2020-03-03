@@ -3,20 +3,25 @@
 Controler::Controler(QObject *parent) : QObject(parent),outputType(QString()),strOutput(QString())
 {
     outputType = "none";
-    crypter = new Crypter();
     vCrypter = new VizhenerCrypter();
 }
 
-bool Controler::validateData(QString data, const QString language){
-    if(!crypter->getLanguages().contains(language)){
+bool Controler::validateData(QString data, const QString language,const QString key){
+    if(!vCrypter->getLanguages().contains(language)){
         emit signalValidateInputError("Language is not supported");
         return false;
+    }
+    for(auto i : key){
+        if(!vCrypter->getLanguages()[language].contains(i)){
+            emit signalValidateKeyError("Unsupported characters in key.");
+            return false;
+        }
     }
     bool containsNeededLetters=false;
     bool containsUnneededLetters = false;
     for(auto i : data){
         if(i.isLetter()){
-            if(crypter->getLanguages()[language].contains(i.toLower())){
+            if(vCrypter->getLanguages()[language].contains(i.toLower())){
                 containsNeededLetters=true;
             }
             else{
@@ -34,58 +39,8 @@ bool Controler::validateData(QString data, const QString language){
     return true;
 }
 
-void Controler::slotWork(QString input, const QString action, const QString language,const QString type, QList<QVariant> keys){
-    QList<double> newKeys;
-    for(auto i : keys)
-        newKeys.append(qvariant_cast<double>(i));
-    if(!validateData(input,language))
-        return;
-    if(type == "normal"){
-        outputType = "text";
-        emit signalOutputTypeChanged(outputType);
-        if(action.toLower()=="encode")
-        {
-            strOutput = crypter->encrypt(input,language,newKeys);
-        }
-        else if(action.toLower()=="decode")
-        {
-            if(keys.length()!=0)
-                strOutput = crypter->decrypt(input,language,newKeys);
-//            else{
-//                int newKey = crypter->decryptWithoutKey(input,"",language);
-//                if(newKey == -1){
-//                    emit signalValidateKeyError("Cannot recognise key. Please try longer text.");
-//                    strOutput = "";
-//                    outputType = "none";
-//                    emit signalOutputTypeChanged(outputType);
-//                }
-//                else {
-//                    strOutput = crypter->decrypt(input,language,newKeys);
-//                }
-//            }
-        }
-        emit signalWorkFinished(strOutput);
-    }
-    else{
-        outputType = "binary";
-        emit signalOutputTypeChanged(outputType);
-        if(action.toLower()=="encode" && bin.size()>0)
-        {
-            outputType = "text";
-            strOutput = crypter->encryptFromBites(bin,language,newKeys);
-            emit signalWorkFinished(strOutput);
-        }
-        else if(action.toLower()=="decode")
-        {
-            outputType = "binary";
-            binOutput = crypter->decryptFromBites(input,language,newKeys);
-            emit signalWorkFinished(QString("Binary file"));
-        }
-    }
-}
-
 void Controler::slotWorkStr(QString input, const QString action, const QString language, const QString type, const QString key){
-    if(!validateData(input,language))
+    if(!validateData(input,language,key))
         return;
     if(type == "normal"){
         outputType = "text";
@@ -96,20 +51,7 @@ void Controler::slotWorkStr(QString input, const QString action, const QString l
         }
         else if(action.toLower()=="decode")
         {
-            if(key.length()!=0)
-                strOutput = vCrypter->decrypt(input,language,key);
-            else{
-                const QString newKey = vCrypter->decryptWithoutKey(input,"",language);
-                if(newKey.isEmpty()){
-                    emit signalValidateKeyError("Cannot recognise key. Please try longer text.");
-                    strOutput = "";
-                    outputType = "none";
-                    emit signalOutputTypeChanged(outputType);
-                }
-                else {
-                    strOutput = vCrypter->decrypt(input,language,key);
-                }
-            }
+            strOutput = vCrypter->decrypt(input,language,key);
         }
         emit signalWorkFinished(strOutput);
     }
@@ -133,10 +75,6 @@ void Controler::slotWorkStr(QString input, const QString action, const QString l
 
 void Controler::slotWorkWithoutKeyStr(const QString input,const QString output,const QString lang){
     emit signalKeyFoundStr(vCrypter->decryptWithoutKey(input,output,lang));
-}
-
-void Controler::slotWorkWithoutKey(const QString input,const QString output,const QString lang){
-    emit signalKeyFound(crypter->decryptWithoutKey(input,output,lang));
 }
 
 void Controler::slotReadFile(const QString& fileurl){
