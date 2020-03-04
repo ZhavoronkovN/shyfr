@@ -73,7 +73,7 @@ Window {
                 right: parent.right
                 top : parent.top
             }
-            height: parent.height/5
+            height: parent.height/6
             Label{
                 id : labelSelectFile
                 anchors{
@@ -115,7 +115,6 @@ Window {
                     editSelectFile.text = "";
                     textInput.text = "";
                     textInput.readOnly = false;
-                    checkDontKnowKey.enabled = radioActionDecode.checked;
                 }
             }
             Button{
@@ -139,7 +138,7 @@ Window {
                 right: parent.right
                 top : rectFile.bottom
             }
-            height: 2*parent.height/5
+            height: 2*parent.height/6
             Rectangle{
                 id : rectSettingLanguage
                 anchors{
@@ -204,10 +203,6 @@ Window {
                     text: "Encode"
                     font.pixelSize: 17
                     checked: true
-                    onClicked: {
-                        checkDontKnowKey.enabled = false;
-                        checkDontKnowKey.checked = false;
-                    }
                 }
                 RadioButton{
                     id : radioActionDecode
@@ -218,77 +213,6 @@ Window {
                     }
                     text : "Decode"
                     font.pixelSize: 17
-                    onClicked: {
-                        if(textInput.readOnly == false)
-                            checkDontKnowKey.enabled = true;
-                    }
-                }
-            }
-        }
-        Rectangle{
-            id: rectType
-            anchors{
-                left: parent.left
-                right : parent.right
-                top : rectSettings.bottom
-            }
-            height: parent.height/5
-            Label{
-                id : labelType
-                anchors{
-                    left: parent.left
-                    top : parent.top
-                    bottom: parent.bottom
-                }
-                text : "Type : "
-                font.pixelSize: 17
-            }
-            RadioButton{
-                id: radioTypeFirst
-                anchors{
-                    left: labelType.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                text: "First(A,B)"
-                checked: true
-                font.pixelSize: 17
-                onClicked: {
-                    rectKeyFirst.visible=true;
-                    editKeyFirstC.visible=false;
-                    editKeyVizhener.visible=false;
-                }
-            }
-            RadioButton{
-                id: radioTypeSecond
-                anchors{
-                    left: radioTypeFirst.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                text: "Second(A,B,C)"
-                font.pixelSize: 17
-                onClicked: {
-                    rectKeyFirst.visible = true;
-                    editKeyFirstC.visible = true;
-                    editKeyVizhener.visible=false;
-                }
-            }
-            RadioButton{
-                id: radioTypeVizhener
-                anchors{
-                    left: radioTypeSecond.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                text: "Vizhener"
-                font.pixelSize: 17
-                onClicked: {
-                    rectKeyFirst.visible=false;
-                    editKeyVizhener.visible=true;
                 }
             }
         }
@@ -297,9 +221,9 @@ Window {
             anchors{
                 left: parent.left
                 right : parent.right
-                top : rectType.bottom
+                top : rectSettings.bottom
             }
-            height: parent.height/5
+            height: parent.height/6
             Label{
                 id : labelKey
                 anchors{
@@ -310,125 +234,96 @@ Window {
                 text : "Select key : "
                 font.pixelSize: 17
             }
-            Rectangle{
-                id : rectKeyFirst
-                anchors{
-                    left: labelKey.right
-                    leftMargin: 10
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                Label{
-                    id: labelKeyFirstA
-                    anchors{
-                        left:parent.left
-                        leftMargin: 10
-                        top : parent.top
-                        bottom: parent.bottom
-                    }
-                    text : "A :"
-                    font.pixelSize: 17
-                }
-                TextInput{
-                    id : editKeyFirstA
-                    anchors{
-                        left : labelKeyFirstA.right
-                        leftMargin: 5
-                        top : parent.top
-                        bottom : parent.bottom
-                    }
-                    text : "0,0"
-                    width: 30
-                    font.pixelSize: 17
-                    validator : DoubleValidator
-                    {
-                        bottom: 0
-                    }
-                    enabled: visible
-                }
-                Label{
-                    id: labelKeyFirstB
-                    anchors{
-                        left:editKeyFirstA.right
-                        leftMargin: 10
-                        top : parent.top
-                        bottom: parent.bottom
-                    }
-                    text : "B :"
-                    font.pixelSize: 17
-                }
-                TextInput{
-                    id : editKeyFirstB
-                    anchors{
-                        left : labelKeyFirstB.right
-                        leftMargin: 5
-                        top : parent.top
-                        bottom : parent.bottom
-                    }
-                    text : "0,0"
-                    width: 30
-                    font.pixelSize: 17
-                    validator: DoubleValidator
-                    {
-                        bottom: 0
-                    }
-                    enabled: visible
-                }
-                Label{
-                    id: labelKeyFirstC
-                    anchors{
-                        left: editKeyFirstB.right
-                        leftMargin: 10
-                        top : parent.top
-                        bottom: parent.bottom
-                    }
-                    text : "C :"
-                    font.pixelSize: 17
-                    visible: editKeyFirstC.visible
-                }
-                TextInput{
-                    id : editKeyFirstC
-                    anchors{
-                        left : labelKeyFirstC.right
-                        leftMargin: 5
-                        top : parent.top
-                        bottom : parent.bottom
-                    }
-                    text : "0,0"
-                    width: 30
-                    font.pixelSize: 17
-                    visible: false
-                    validator: DoubleValidator
-                    {
-                        bottom: 0
-                    }
-                    enabled: visible
-                }
-            }
             TextInput{
                 id : editKeyVizhener
                 anchors{
                     left: labelKey.right
                     leftMargin: 10
                     top: parent.top
+                    right: parent.right
                     bottom: parent.bottom
                 }
                 font.pixelSize: 17
-                validator: RegExpValidator {regExp: radioLanguageEn.checked?/[ abcdefghijklmnopqrstuvwxyz]+/:/[ абвгґдеєжзиіїйклмнопрстуфхцчшщьюя]+/}
-                width: 400
-                visible: false
-                enabled: visible
+                validator: RegExpValidator {regExp: radioTypeNumber.checked?/[123456789]?[0123456789]*/:radioLanguageEn.checked?/[ abcdefghijklmnopqrstuvwxyz]+/:/[ абвгґдеєжзиіїйклмнопрстуфхцчшщьюя]+/}
             }
-            CheckBox{
-                id : checkDontKnowKey
+        }
+        Rectangle{
+            id: rectType
+            anchors{
+                left: parent.left
+                right : parent.right
+                top : rectKey.bottom
+            }
+            height: 2*parent.height/6
+            Label{
+                id : labelType
                 anchors{
-                    right: parent.right
+                    left: parent.left
                     top : parent.top
                     bottom: parent.bottom
                 }
-                text : "I dont know key"
+                text : "Key type : "
                 font.pixelSize: 17
-                enabled: false
+            }
+            RadioButton{
+                id: radioTypeNumber
+                anchors{
+                    left: labelType.right
+                    leftMargin: 10
+                    top: parent.top
+                }
+                text: "Numbers"
+                checked: true
+                font.pixelSize: 17
+            }
+            RadioButton{
+                id: radioTypeLetters
+                anchors{
+                    left: labelType.right
+                    leftMargin: 10
+                    top: radioTypeNumber.bottom
+                }
+                text: "Letters"
+                font.pixelSize: 17
+            }
+            Label{
+                id: labelGenerateKey
+                anchors{
+                    right: inputGenerateKey.left
+                    rightMargin: 10
+                    verticalCenter: parent.verticalCenter
+                }
+                text : "Generate key with seed "
+                font.pixelSize: 17
+            }
+            TextInput{
+                id: inputGenerateKey
+                anchors{
+                    right: buttonGenerateKey.left
+                    rightMargin: 10
+                    verticalCenter: parent.verticalCenter
+                }
+                width : 30
+                font.pixelSize: 17
+                validator: IntValidator{
+                    bottom: 1
+                }
+            }
+            Button{
+                id: buttonGenerateKey
+                anchors{
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
+                font.pixelSize: 17
+                text: "Generate"
+                height: buttonFileChoose.height
+                width: 100
+                enabled: inputGenerateKey.text
+                onClicked: {
+                    var type = radioTypeNumber.checked?"number":radioLanguageEn.checked?"en":"ukr";
+                    controler.slotGenerateKey(type,parseInt(inputGenerateKey.text),Math.max(10,textInput.text.length+1));
+                }
             }
         }
     }
@@ -452,7 +347,7 @@ Window {
                 font.pixelSize: 20
                 placeholderText: "Here will be final text"
                 wrapMode: Text.Wrap
-                readOnly: !checkDontKnowKey.checked
+                readOnly: true
             }
         }
     }
@@ -517,24 +412,12 @@ Window {
         height: 50
         text: "Start"
         font.pixelSize: 20
-        enabled: textInput.text
+        enabled: textInput.text&&editKeyVizhener.text
         onClicked : {
             var lang = radioLanguageEn.checked?"en":"ukr";
             var action = radioActionDecode.checked?"decode":"encode";
-            var type = textInput.readOnly == true?"binary":"normal";
-            if(radioTypeVizhener.checked){
-                if(checkDontKnowKey.checked){
-                    controler.slotWorkWithoutKeyStr(textInput.text,textOutput.text,lang);
-                }
-                else
-                    controler.slotWorkStr(textInput.text,action,lang,type,editKeyVizhener.text);
-            }
-            else{
-                    if(checkDontKnowKey.checked)
-                        controler.slotWorkWithoutKey(textInput.text,textOutput.text,lang);
-                    else
-                        controler.slotWork(textInput.text,action,lang,type,radioTypeSecond.checked?[parseFloat(editKeyFirstA.text),parseFloat(editKeyFirstB.text),parseFloat(editKeyFirstC.text)]:[parseFloat(editKeyFirstA.text),parseFloat(editKeyFirstB.text)]);
-            }
+            var type = "normal";
+            controler.slotWorkStr(textInput.text,action,lang,type,editKeyVizhener.text);
         }
     }
     Button{
@@ -587,8 +470,6 @@ Window {
             var splitted = path.split(".");
             if(!splitted.length>1||splitted[splitted.length-1]!=="txt"){
                 textInput.readOnly = true;
-                checkDontKnowKey.enabled = false;
-                checkDontKnowKey.checked = false;
             }
             controler.slotReadFile(editSelectFile.text);
         }
@@ -628,7 +509,7 @@ Window {
             if(newOutput==="text"){
                 buttonCopy.enabled = true;
                 buttonPrint.enabled = true;
-                dialogFileSave.nameFilters = ["Text file (*.txt)","All files (*)"];
+                dialogFileSave.nameFilters = ["Text files (*.txt)","All files (*)"];
             }
             else{
                 buttonCopy.enabled = false;
@@ -639,12 +520,6 @@ Window {
                     dialogFileSave.nameFilters = ["All files (*)"];
             }
         }
-        onSignalKeyFoundStr: editKeyVizhener.text=key;
-        onSignalKeyFound: {
-            editKeyFirstA.text=keys[0];
-            editKeyFirstB.text=keys[1];
-            if(editKeyFirstC.visible)
-                editKeyFirstC.text=keys[2];
-        }
+        onSignalKeyGenerated: editKeyVizhener.text = key;
     }
 }

@@ -7,13 +7,14 @@
 #include <QPrintDialog>
 #include <crypter.h>
 #include <vizhenercrypter.h>
+#include <random>
 
 class Controler : public QObject
 {
     Q_OBJECT
 public:
     explicit Controler(QObject *parent = nullptr);
-    virtual ~Controler(){ delete crypter; delete vCrypter;}
+    virtual ~Controler(){ delete vCrypter;}
     virtual bool validateData(QString data,const QString language);
     QString outputType;
 signals:
@@ -25,16 +26,14 @@ signals:
     void signalWorkFinished(const QString res);
     void signalFileReadFinished(const QString res);
     void signalOutputTypeChanged(const QString newOutput);
+    void signalKeyGenerated(const QString key);
 public slots:
-    void slotWork(QString input, const QString action, const QString language, const QString type, QList<QVariant> keys);
     void slotWorkStr(QString input, const QString action, const QString language, const QString type, const QString key);
-    void slotWorkWithoutKeyStr(const QString input,const QString output,const QString lang);
-    void slotWorkWithoutKey(const QString input,const QString output,const QString lang);
+    void slotGenerateKey(const QString type,const int seed,const int length);
     void slotReadFile(const QString& fileurl);
     void slotCopy();
     void slotSaveFile(const QString& fileurl);
 private:
-    Crypter * crypter;
     VizhenerCrypter * vCrypter;
     QByteArray bin;
     QByteArray binOutput;
