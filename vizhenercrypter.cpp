@@ -13,46 +13,12 @@ const QMap<QString,QString> VizhenerCrypter::getLanguages(){
 
 
 const QByteArray VizhenerCrypter::encrypt(QString data, const QString language, const QString key){
-    QString res;
-    QList<QString> splitted = data.split(" ");
-    if(data.length()>1000){
-        int last = 0;
-        QList<QFuture<QString>> pool;
-        for(int i = 0; i < maxThreads-1; i++){
-            pool.append(QtConcurrent::run(this,&VizhenerCrypter::encryptHelper,splitted.begin()+last,splitted.begin()+last+splitted.length()/maxThreads,language,key));
-            last += splitted.length()/maxThreads;
-        }
-        pool.append(QtConcurrent::run(this,&VizhenerCrypter::encryptHelper,splitted.begin()+last,splitted.end(),language,key));
-        for(auto i : pool){
-            res+=i.result();
-            i.waitForFinished();
-        }
-    }
-    else{
-            res = encryptHelper(splitted.begin(),splitted.end(),language,key);
-    }
-    return res.toUtf8();
+    return encryptHelper(data.begin(),data.end(),language,key).toUtf8();
 }
 
 
 const QString VizhenerCrypter::decrypt(QString data, const QString language, const QString key){
-    QList<QString> splitted = data.split(" ");
-    if(data.length()>1000){
-        int last = 0;
-        QList<QFuture<void>> pool;
-        for(int i = 0; i < maxThreads-1; i++){
-            pool.append(QtConcurrent::run(this,&VizhenerCrypter::encryptHelper,splitted.begin()+last,splitted.begin()+last+splitted.length()/maxThreads,language,key));
-            last += splitted.length()/maxThreads;
-        }
-        pool.append(QtConcurrent::run(this,&VizhenerCrypter::encryptHelper,splitted.begin()+last,splitted.end(),language,key));
-        for(auto i : pool){
-            i.waitForFinished();
-        }
-    }
-    else{
-        encryptHelper(splitted.begin(),splitted.end(),language,key);
-    }
-    return splitted.join(" ");
+	return encryptHelper(data.begin(),data.end(),language,key);
 }
 
 
